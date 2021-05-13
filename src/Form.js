@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Text from "./components/Text"
+
 import {Button} from "@material-ui/core"
 import  TextField from '@material-ui/core/TextField'
 import  {Radio, RadioGroup, FormControlLabel} from '@material-ui/core'
@@ -26,7 +26,7 @@ function Form() {
   const saveAnswer = async () => {
     console.log(answer)
 
-    await fetch('http://localhost:8080/answers',
+    await fetch('https://formproject6.herokuapp.com/answers',
     {
       method: 'POST',
       body: JSON.stringify(answer),
@@ -43,7 +43,7 @@ function Form() {
   const saveQuestion = async () => {
     console.log(question)
 
-    await fetch('http://localhost:8080/questions',
+    await fetch('https://formproject6.herokuapp.com/questions',
     {
       method: 'POST',
       body: JSON.stringify(questiontwo),
@@ -54,7 +54,7 @@ function Form() {
   }
   
   const fetchQuestion = async () => {
-    await fetch('http://localhost:8080/questions')
+    await fetch('https://formproject6.herokuapp.com/questions')
       .then(response => response.json())
       .then(data => {
         let jsonQ = {
