@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import {Button} from "@material-ui/core"
 import  TextField from '@material-ui/core/TextField'
-import  {Radio, RadioGroup, FormControlLabel} from '@material-ui/core'
+import  {Radio, RadioGroup, FormControlLabel, FormControl} from '@material-ui/core'
 
 
 
@@ -11,42 +11,20 @@ function Form() {
   const [question, setQuestion] = useState({id: null, title: "", type: "", choices: ([]) });
   const [answer, setAnswer] = useState()
    */
-  const [complete, setComplete] = useState(false)
   const [json, setJson] = useState({questions: []})
-  const [answer, setAnswer] = React.useState({question: {questionid: 3}, input: ''})
-  const [answers, setAnswers] = React.useState([])
-  const [question, setQuestion] = useState({title: "toinen ksymys",type: "checkbox",choices: [ "kyllä","en tiedä",  "ei"]})
-  const [questiontwo, setQuestiontwo] = useState({title: "toinen ksymys",type: "text"})
      
   useEffect (() => {
     fetchQuestion();
     
     },[])
 
-  const saveAnswer = async () => {
-    console.log(answer)
+  const saveAnswer = async (answertosave) => {
+    console.log(answertosave)
 
     await fetch('https://formproject6.herokuapp.com/answers',
     {
       method: 'POST',
-      body: JSON.stringify(answer),
-      headers: { 'Content-type' : 'application/json'  }
-    })
-    //.then(_ => fetchQuestion())
-    .catch(err => console.error(err))
-  }
-
-  const inputChanged = (event) => {
-    setAnswer({ ...answer, [event.target.name]: event.target.value });
-  }
-
-  const saveQuestion = async () => {
-    console.log(question)
-
-    await fetch('https://formproject6.herokuapp.com/questions',
-    {
-      method: 'POST',
-      body: JSON.stringify(questiontwo),
+      body: JSON.stringify(answertosave),
       headers: { 'Content-type' : 'application/json'  }
     })
     //.then(_ => fetchQuestion())
@@ -64,7 +42,7 @@ function Form() {
         let i = 0;
         while (i < data.length) {
           jsonQ.questions[i] = {
-            id: data[i].id,
+            id: String(data[i].questionid),
             type: data[i].type,
             name: String(i),
             title: data[i].title,
@@ -80,16 +58,32 @@ function Form() {
   }
 
   const onComplete = () => {
-    setComplete(true);
-    saveAnswer();
-    
+    console.log("Survey set to true")
+    let answers = []
+    for(let i = 0; i < json.questions.length; i++) {
+      answers[i] = {question: {questionid: json.questions[i].id}, input: document.getElementById(json.questions[i].id).value}
+    }
+    console.log(answers)
+
+    for(let i = 0; i < answers.length; i++) {
+      if (answers[i].input == undefined) {
+        continue
+      } else if (answers[i].input.length == 0) {
+        continue
+      } else {
+        saveAnswer(answers[i])
+        console.log(answers[i] + "saved to db")
+      }
+
+    }
   }
+
 
   
 
   return (
     <div>
-    <form  id="quiz" action="#" onSubmit={onComplete}>
+    <FormControl  id="quiz">
       {json.questions.map((question, index) => {
         if (question.type === "text") {
           return <TextField style={{marginHorizontal: 10, padding: 10}} label={question.title} id={question.id} key={index} />
@@ -110,12 +104,12 @@ function Form() {
       }
       )
       }
-      <Button>Submit</Button>
-    </form>
-    <button onClick={saveQuestion}>Lähetä</button>
+      <Button type="submit" onClick={onComplete}>Submit</Button>
+    </FormControl>
+    
     </div>
 
   );
 }
 
-export default Form;
+export default Form; 
