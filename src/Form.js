@@ -7,10 +7,7 @@ import  {Radio, RadioGroup, FormControlLabel, FormControl} from '@material-ui/co
 
 
 function Form() {
-  /**
-  const [question, setQuestion] = useState({id: null, title: "", type: "", choices: ([]) });
-  const [answer, setAnswer] = useState()
-   */
+
   const [json, setJson] = useState({questions: []})
      
   useEffect (() => {
@@ -66,9 +63,9 @@ function Form() {
     console.log(answers)
 
     for(let i = 0; i < answers.length; i++) {
-      if (answers[i].input == undefined) {
+      if (answers[i].input === undefined) {
         continue
-      } else if (answers[i].input.length == 0) {
+      } else if (answers[i].input.length === 0) {
         continue
       } else {
         saveAnswer(answers[i])
@@ -88,7 +85,7 @@ function Form() {
         if (question.type === "text") {
           return <TextField style={{marginHorizontal: 10, padding: 10}} label={question.title} id={question.id} key={index} />
 
-        } else if(question.type === "checkbox"){
+        } else if(question.type === "checkbox" && question.choices != null){
           
            return(
               <RadioGroup id={question.id} key={index} name={question.title} aria-label="choices">
@@ -99,7 +96,7 @@ function Form() {
             )
             
           } else {
-            return <p>nulli</p>
+            return <p key={index}>nulli</p>
           }
       }
       )
